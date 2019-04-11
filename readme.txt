@@ -1,6 +1,6 @@
 === Native Lazy Load ===
 Contributors: wphandle, m_uysl
-Tags: lazy-load, lazy-loading, spam
+Tags: lazy-load, lazy-loading
 Requires at least: 4.5
 Tested up to: 5.1.1
 Stable tag: 0.1.0
