@@ -44,8 +44,7 @@ class WPH_Native_Lazy_Load {
 		foreach ( $matches[0] as $imgHTML ) {
 			// don't to the replacement if the image is a data-uri
 			if ( ! preg_match( "/src=['\"]data:image/is", $imgHTML ) ) {
-				$lazy_load_attr = array( 'loading="' . self::load_type() . '" src=', 'loading="' . self::load_type() . '" srcset=', 'class="lazyload ' );
-				$replace        = str_replace( array( 'src=', 'srcset=', 'class="' ), $lazy_load_attr, $imgHTML );
+				$replace        = str_replace( '<img ',  '<img loading="' . self::load_type() . '" ', $imgHTML );
 				$content        = str_replace( $imgHTML, $replace, $content );
 			}
 		}
@@ -153,25 +152,18 @@ add_action( 'wp_footer', 'native_lazy_load_compat_js' );
 function native_lazy_load_compat_js() {
 	?>
 	<script>
-        (async() => {
-            if('loading' in HTMLImageElement.prototype
-        )
-        {
-            const images = document.querySelectorAll("img.lazyload");
+        if ('loading' in HTMLImageElement.prototype) {
+            const images = document.querySelectorAll('img.lazyload');
             images.forEach(img => {
                 img.src = img.dataset.src;
-        })
-            ;
-        }
-        else
-        {
+        });
+        } else {
             // Dynamically import the LazySizes library
-            const lazySizesLib = await import('https://cdnjs.cloudflare.com/ajax/libs/lazysizes/4.1.5/lazysizes.min.js');
-            // Initiate LazySizes (reads data-src & class=lazyload)
-            lazySizes.init(); // lazySizes works off a global.
+            const script = document.createElement('script');
+            script.src =
+                'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/4.1.8/lazysizes.min.js';
+            document.body.appendChild(script);
         }
-        })
-        ();
 	</script>
 	<?php
 }
